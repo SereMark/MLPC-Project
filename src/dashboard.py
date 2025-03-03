@@ -1,16 +1,20 @@
 import os
 import streamlit as st
-import DataPreparationWorker, TrainingWorker, EvaluationWorker
+import DataPreparationWorker
+import TrainingWorker
+import EvaluationWorker
 
+# ---- PAGE CONFIGURATION ----
 st.set_page_config(
     page_title="Audio ML Management Dashboard",
     page_icon="🔊",
     layout="wide"
 )
 
+# ---- PATH VALIDATION UTILITY ----
 def validate_path(path: str, path_type: str = "file") -> bool:
     """
-    Validates that a path exists and is of the correct type (file or directory).
+    Checks if a path exists and matches the specified type: 'file' or 'directory'.
     """
     if not path:
         return False
@@ -20,10 +24,15 @@ def validate_path(path: str, path_type: str = "file") -> bool:
         return os.path.isdir(path)
     return False
 
-def input_with_validation(label: str, default_value: str = "", path_type: str = "file", help_text: str = None) -> str:
+# ---- INPUT FIELD WITH VALIDATION ----
+def input_with_validation(
+    label: str,
+    default_value: str = "",
+    path_type: str = "file",
+    help_text: str = None
+) -> str:
     """
-    Renders a text input in Streamlit for a file or directory path and checks its validity.
-    A small message is displayed indicating whether the path is valid.
+    Creates a text input for a file or directory path and visually indicates validity.
     """
     path = st.text_input(label, default_value, help=help_text)
     if path:
@@ -33,12 +42,10 @@ def input_with_validation(label: str, default_value: str = "", path_type: str = 
             st.markdown("⚠️ **Invalid Path**")
     return path
 
+# ---- WORKER EXECUTION AND PROGRESS ----
 def execute_worker(create_worker):
     """
-    A helper function that:
-      1. Initializes a worker with progress/status callbacks.
-      2. Runs the worker.
-      3. Updates the UI with progress and final status.
+    Executes a worker with live progress and status updates in the UI.
     """
     progress_bar = st.progress(0)
     status_text = st.empty()
@@ -58,34 +65,39 @@ def execute_worker(create_worker):
     except Exception as e:
         status_text.text(f"⚠️ Error: {e}")
 
+# ---- DATA PREPARATION TAB ----
 def data_preparation_tab():
-    """
-    Handles data preparation steps for raw audio files.
-    """
     st.subheader("Data Preparation")
-
+    
     raw_audio_dir = input_with_validation(
-        "Raw Audio Directory:",
-        "data/raw_audio",
+        label="Raw Audio Directory:",
+        default_value="data/raw_audio",
         path_type="directory",
-        help_text="Folder containing raw audio files."
+        help_text="Path containing raw audio files."
     )
     annotations_file = input_with_validation(
-        "Annotations File:",
-        "data/annotations.csv",
+        label="Annotations File:",
+        default_value="data/annotations.csv",
         path_type="file",
-        help_text="File with labels or other relevant metadata."
+        help_text="CSV file with labels or metadata."
     )
     processed_data_dir = input_with_validation(
-        "Processed Data Output Directory:",
-        "data/processed_audio",
+        label="Processed Data Output Directory:",
+        default_value="data/processed_audio",
         path_type="directory",
-        help_text="Destination for processed audio files."
+        help_text="Folder where processed audio files will be saved."
     )
-    sample_rate = st.number_input("Sample Rate (Hz):", min_value=8000, max_value=48000, value=16000, step=1000)
+    sample_rate = st.number_input(
+        label="Sample Rate (Hz):",
+        min_value=8000,
+        max_value=48000,
+        value=16000,
+        step=1000,
+        help="Sampling rate for audio processing."
+    )
 
+    st.write("")  # Spacing
     if st.button("Start Data Preparation"):
-        # Basic validation of paths
         if not validate_path(raw_audio_dir, "directory"):
             st.error("Invalid raw audio directory.")
             return
@@ -93,7 +105,7 @@ def data_preparation_tab():
             st.error("Invalid annotations file.")
             return
         if not validate_path(processed_data_dir, "directory"):
-            st.error("Invalid output directory for processed data.")
+            st.error("Invalid processed data output directory.")
             return
 
         execute_worker(lambda progress_cb, status_cb: DataPreparationWorker(
@@ -105,32 +117,54 @@ def data_preparation_tab():
             status_callback=status_cb
         ))
 
+# ---- TRAINING TAB ----
 def training_tab():
-    """
-    Handles the training configuration for an audio model.
-    """
     st.subheader("Training")
+    
+    epochs = st.number_input(
+        label="Epochs:",
+        min_value=1,
+        max_value=1000,
+        value=10,
+        help="Number of epochs to train."
+    )
+    batch_size = st.number_input(
+        label="Batch Size:",
+        min_value=1,
+        max_value=2048,
+        value=32,
+        help="Number of samples per gradient update."
+    )
+    learning_rate = st.number_input(
+        label="Learning Rate:",
+        min_value=1e-6,
+        max_value=1.0,
+        value=0.001,
+        format="%.6f",
+        help="Learning rate for your optimizer."
+    )
 
-    epochs = st.number_input("Epochs:", min_value=1, max_value=1000, value=10)
-    batch_size = st.number_input("Batch Size:", min_value=1, max_value=2048, value=32)
-    learning_rate = st.number_input("Learning Rate:", min_value=1e-6, max_value=1.0, value=0.001, format="%.6f")
-
+    st.markdown("---")
     train_data_path = input_with_validation(
-        "Training Data File:",
-        "data/processed_audio/train_data.csv",
-        path_type="file"
+        label="Training Data File:",
+        default_value="data/processed_audio/train_data.csv",
+        path_type="file",
+        help_text="CSV file with training data."
     )
     val_data_path = input_with_validation(
-        "Validation Data File (optional):",
-        "data/processed_audio/val_data.csv",
-        path_type="file"
+        label="Validation Data File (optional):",
+        default_value="data/processed_audio/val_data.csv",
+        path_type="file",
+        help_text="CSV file with validation data."
     )
     model_output_dir = input_with_validation(
-        "Model Output Directory:",
-        "models/",
-        path_type="directory"
+        label="Model Output Directory:",
+        default_value="models/",
+        path_type="directory",
+        help_text="Folder to save trained models."
     )
 
+    st.write("")  # Spacing
     if st.button("Start Training"):
         if not validate_path(train_data_path, "file"):
             st.error("Invalid training data file.")
@@ -153,37 +187,39 @@ def training_tab():
             status_callback=status_cb
         ))
 
+# ---- EVALUATION TAB ----
 def evaluation_tab():
-    """
-    Handles model evaluation using a test dataset.
-    """
     st.subheader("Evaluation")
-
+    
     model_path = input_with_validation(
-        "Trained Model Path:",
-        "models/audio_model.pth",
-        path_type="file"
+        label="Trained Model Path:",
+        default_value="models/audio_model.pth",
+        path_type="file",
+        help_text="Path to the trained model file."
     )
     test_data_path = input_with_validation(
-        "Test Data File:",
-        "data/processed_audio/test_data.csv",
-        path_type="file"
+        label="Test Data File:",
+        default_value="data/processed_audio/test_data.csv",
+        path_type="file",
+        help_text="CSV file with test data."
     )
     results_output_dir = input_with_validation(
-        "Evaluation Results Directory:",
-        "evaluation/",
-        path_type="directory"
+        label="Evaluation Results Directory:",
+        default_value="evaluation/",
+        path_type="directory",
+        help_text="Folder to store evaluation results."
     )
 
+    st.write("")  # Spacing
     if st.button("Start Evaluation"):
         if not validate_path(model_path, "file"):
-            st.error("Invalid model file.")
+            st.error("Invalid model path.")
             return
         if not validate_path(test_data_path, "file"):
             st.error("Invalid test data file.")
             return
         if not validate_path(results_output_dir, "directory"):
-            st.error("Invalid results directory.")
+            st.error("Invalid output directory for results.")
             return
 
         execute_worker(lambda progress_cb, status_cb: EvaluationWorker(
@@ -194,8 +230,10 @@ def evaluation_tab():
             status_callback=status_cb
         ))
 
+# ---- MAIN APP ----
 def main():
-    st.title("Audio ML Management Dashboard")
+    st.title("🔊 Audio ML Management Dashboard")
+
     tabs = st.tabs(["Data Preparation", "Training", "Evaluation"])
 
     with tabs[0]:
