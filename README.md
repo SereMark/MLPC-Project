@@ -1,28 +1,17 @@
-# Audio ML Management Dashboard
-
-This project provides a **Streamlit** app for managing basic audio machine learning workflows. It features three main steps: **Data Preparation**, **Training**, and **Evaluation**.
-
 ## Setup
 
-1. **Install Conda**.  
+1. **Install Anaconda and Git**.  
 2. **Clone the Repository**:  
    ```bash
-   git clone <REPO_URL>
-   cd <REPO_FOLDER>
+   git clone https://github.com/SereMark/MLPC-Project.git
+   cd MLPC-Project
    ```
 3. **Create and Activate the Environment**:  
    ```bash
    conda env create -f environment.yml
    conda activate mlpc-project
    ```
-
-## Usage
-
-1. **Start the Dashboard**:  
+4. **Start the Dashboard**:  
    ```bash
    streamlit run src/dashboard.py
    ```
-2. **Select a Tab**:  
-   - **Data Preparation**: Specify raw audio/annotations directories and basic audio settings.  
-   - **Training**: Configure epochs, batch size, learning rate, and data paths.  
-   - **Evaluation**: Provide a trained model path, test data path, and output location for results.
