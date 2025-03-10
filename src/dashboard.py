@@ -39,10 +39,7 @@ def execute_worker(create_worker):
     except Exception as e:
         status_text.text(f"⚠️ Error: {e}")
 
-def main():
-    st.title("🔊 Audio Dashboard")
-    st.subheader("Data Preparation")
-    
+def data_preparation_tab():
     raw_audio_dir = input_with_validation(
         label="Raw Audio Directory:",
         default_value="data/raw_audio",
@@ -92,4 +89,9 @@ def main():
         ))
 
 if __name__ == "__main__":
-    main()
+    st.title("🔊 Audio Dashboard")
+
+    tabs = st.tabs(["Data Preparation"])
+
+    with tabs[0]:
+        data_preparation_tab()
