@@ -1,4 +1,5 @@
-import os, streamlit as st, DataPreparationWorker
+import os, streamlit as st
+from DataPreparationWorker import DataPreparationWorker
 
 st.set_page_config(page_title="Audio Dashboard", page_icon="🔊", layout="wide")
 
