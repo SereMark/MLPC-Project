@@ -10,3 +10,6 @@ dependencies:
   - numpy
   - h5py
   - streamlit
+  - pip
+  - pip:
+      - label-studio

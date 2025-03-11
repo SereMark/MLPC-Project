@@ -15,3 +15,7 @@
    ```bash
    streamlit run src/AudioDashboard.py
    ```
+5. **Start Data Annotation**:  
+   ```bash
+   label-studio
+   ```

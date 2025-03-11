@@ -1,5 +1,4 @@
 import os, streamlit as st
-from workers.AnnotationWorker import AnnotationWorker
 from workers.DataExplorationWorker import DataExplorationWorker
 from workers.ModelTrainingWorker import ModelTrainingWorker
 from workers.ChallengeWorker import ChallengeWorker
@@ -39,73 +38,25 @@ def execute_worker(create_worker):
     except Exception as e:
         status_text.text(f"⚠️ Error: {e}")
 
-def annotation_tab():
-    st.subheader("Annotation")
-    st.markdown("""
-    **Goal**: Use Label Studio to annotate audio with textual descriptions
-    and temporal information.
-    """)
-
-    project_path = input_with_validation(
-        label="Label Studio Project Path:",
-        default_value="label_studio_project",
-        path_type="directory",
-        help_text="Path to the Label Studio project."
-    )
-    config_file = input_with_validation(
-        label="Annotation Config File:",
-        default_value="label_studio_project/annotation_config.yaml",
-        path_type="file",
-        help_text="Configuration file (YAML/JSON) for labeling."
-    )
-
-    if st.button("Run Annotation Step"):
-        if not validate_path(project_path, "directory"):
-            st.error("Invalid Label Studio project path.")
-            return
-        if not validate_path(config_file, "file"):
-            st.error("Invalid annotation config file.")
-            return
-
-        def create_worker(progress_cb, status_cb):
-            return AnnotationWorker(
-                label_studio_project_path=project_path,
-                annotation_config_file=config_file,
-                progress_callback=progress_cb,
-                status_callback=status_cb
-            )
-
-        execute_worker(create_worker)
-
 def data_exploration_tab():
     st.subheader("Data Exploration")
     st.markdown("""
     **Goal**: Explore the annotated dataset, investigate clustering, and examine 
     correlations with textual embeddings.
     """)
-
     features_file = input_with_validation(
         label="Features & Embeddings File:",
         default_value="data/features_embeddings.csv",
         path_type="file",
         help_text="Path to a file containing precomputed features & text embeddings."
     )
-
-    clustering_method = st.selectbox(
-        "Clustering Method:",
-        ["KMeans", "DBSCAN", "Agglomerative"]
-    )
-    n_clusters = st.slider("Number of Clusters (if applicable)", 2, 20, 5)
-    embedding_type = st.selectbox(
-        "Text Embedding Type:",
-        ["Word2Vec", "BERT", "SentenceTransformer", "Custom"]
-    )
-
+    clustering_method = st.selectbox("Clustering Method:", ["KMeans", "DBSCAN", "Agglomerative"])
+    n_clusters = st.slider("Number of Clusters", 2, 20, 5)
+    embedding_type = st.selectbox("Text Embedding Type:", ["Word2Vec", "BERT", "SentenceTransformer", "Custom"])
     if st.button("Run Data Exploration"):
         if not validate_path(features_file, "file"):
             st.error("Invalid features file path.")
             return
-
         def create_worker(progress_cb, status_cb):
             return DataExplorationWorker(
                 features_file=features_file,
@@ -115,7 +66,6 @@ def data_exploration_tab():
                 progress_callback=progress_cb,
                 status_callback=status_cb
             )
-
         execute_worker(create_worker)
 
 def model_training_tab():
@@ -124,50 +74,30 @@ def model_training_tab():
     **Goal**: Train a sound event detection model, using the textual annotations 
     mapped to the desired labels.
     """)
-
     training_data_file = input_with_validation(
         label="Training Data File:",
         default_value="data/training_data.csv",
         path_type="file",
         help_text="Path to CSV with textual descriptors mapped to training labels."
     )
-
-    label_mapping_mode = st.radio(
-        "Label Mapping Strategy:",
-        ["Simple Synonyms", "Embedding Similarity"]
-    )
-
-    synonyms_list = st.text_area(
-        "Synonym List (comma or newline separated):",
-        "speech,talking,conversation\ncar,vehicle,honk\nmusic,song,tune"
-    )
-
-    embedding_model = st.selectbox(
-        "Embedding Model for Label Mapping:",
-        ["Word2Vec", "BERT", "SentenceTransformer"]
-    )
-
-    model_type = st.selectbox(
-        "Model Type:",
-        ["RandomForest", "SVM", "CNN", "RNN", "Transformer"]
-    )
-
+    label_mapping_mode = st.radio("Label Mapping Strategy:", ["Simple Synonyms", "Embedding Similarity"])
+    synonyms_list = st.text_area("Synonym List (comma or newline separated):",
+        "speech,talking,conversation\ncar,vehicle,honk\nmusic,song,tune")
+    embedding_model = st.selectbox("Embedding Model for Label Mapping:", ["Word2Vec", "BERT", "SentenceTransformer"])
+    model_type = st.selectbox("Model Type:", ["RandomForest", "SVM", "CNN", "RNN", "Transformer"])
     st.write("### Hyperparameters")
     lr = st.number_input("Learning Rate", 0.0001, 0.1, 0.001, 0.0001)
     epochs = st.slider("Epochs", 1, 200, 10)
     batch_size = st.slider("Batch Size", 1, 256, 32)
-
     if st.button("Start Model Training"):
         if not validate_path(training_data_file, "file"):
             st.error("Invalid training data file.")
             return
-
         hyperparams = {
             "learning_rate": lr,
             "epochs": epochs,
             "batch_size": batch_size
         }
-
         def create_worker(progress_cb, status_cb):
             return ModelTrainingWorker(
                 training_data_file=training_data_file,
@@ -179,7 +109,6 @@ def model_training_tab():
                 progress_callback=progress_cb,
                 status_callback=status_cb
             )
-
         execute_worker(create_worker)
 
 def challenge_tab():
@@ -188,7 +117,6 @@ def challenge_tab():
     **Goal**: Generate predictions on a secret test set to get an unbiased measure 
     of the model's performance.
     """)
-
     trained_model_path = input_with_validation(
         label="Trained Model Path:",
         default_value="models/best_model.pth",
@@ -201,7 +129,6 @@ def challenge_tab():
         path_type="directory",
         help_text="Directory containing hidden or final test audio."
     )
-
     if st.button("Generate Predictions"):
         if not validate_path(trained_model_path, "file"):
             st.error("Invalid model path.")
@@ -209,7 +136,6 @@ def challenge_tab():
         if not validate_path(secret_test_set_path, "directory"):
             st.error("Invalid test set directory.")
             return
-
         def create_worker(progress_cb, status_cb):
             return ChallengeWorker(
                 trained_model_path=trained_model_path,
@@ -217,27 +143,17 @@ def challenge_tab():
                 progress_callback=progress_cb,
                 status_callback=status_cb
             )
-
         execute_worker(create_worker)
 
 def main():
     st.set_page_config(page_title="MLPC Project Dashboard", page_icon="🔊", layout="wide")
     st.title("🔊 MLPC Project — Audio SED Dashboard")
-
-    tabs = st.tabs([
-        "Annotation",
-        "Data Exploration",
-        "Model Training",
-        "Challenge"
-    ])
-
+    tabs = st.tabs(["Data Exploration", "Model Training", "Challenge"])
     with tabs[0]:
-        annotation_tab()
-    with tabs[1]:
         data_exploration_tab()
-    with tabs[2]:
+    with tabs[1]:
         model_training_tab()
-    with tabs[3]:
+    with tabs[2]:
         challenge_tab()
 
 if __name__ == "__main__":
