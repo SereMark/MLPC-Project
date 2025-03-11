@@ -13,5 +13,5 @@
    ```
 4. **Start the Dashboard**:  
    ```bash
-   streamlit run src/dashboard.py
+   streamlit run src/AudioDashboard.py
    ```
