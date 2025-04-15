@@ -11,7 +11,3 @@
    conda env create -f environment.yml
    conda activate mlpc-project
    ```
-4. **Start the Dashboard**:  
-   ```bash
-   streamlit run src/AudioDashboard.py
-   ```
