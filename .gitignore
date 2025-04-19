@@ -1,29 +1,23 @@
-# Python cache/bytecode
+# Python bytecode / cache
 __pycache__/
 *.py[cod]
 *$py.class
 
-# C extensions
-*.so
-
-# Build and distribution folders
-build/
-dist/
-*.egg-info/
-*.egg
-
-# Virtual environments
+# Python virtual environments
+.env
 .venv/
 venv/
 env/
 ENV/
 env.bak/
 venv.bak/
-.env
 
-# OS-specific
+# IDE / Editor
+.vscode/
+
+# Operating system files
 .DS_Store
 Thumbs.db
 
-# VS Code
-.vscode/
+# Dataset folder
+MLPC2025_dataset/

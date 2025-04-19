@@ -13,3 +13,5 @@ dependencies:
   - scikit-learn
   - h5py
   - pyspellchecker
+  - seaborn
+  - librosa
