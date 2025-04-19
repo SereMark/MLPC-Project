@@ -8,4 +8,8 @@ dependencies:
   - pytorch=2.5.1
   - pytorch-cuda=12.4
   - numpy
+  - pandas
+  - matplotlib
+  - scikit-learn
   - h5py
+  - pyspellchecker
