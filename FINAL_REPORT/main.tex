@@ -63,7 +63,7 @@ TODO: Find two interesting recordings with at least two annotators and multiple 
 
 Temporal annotation precision was evaluated by comparing the onset and offset timings of overlapping regions from different annotators on the same audio file, considering only segments where a temporal overlap was present. The key metrics were Euclidean distance, onset and offset differences, and their means.
 
-\begin{figure}[ht]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.8\textwidth]{figures/annotation_quality/temporal_annotation_differences.png}
   \caption{Temporal Annotation Differences}
@@ -76,7 +76,7 @@ The results point to high general temporal precision, however, a significant amo
 
 \subsection{Text Annotation Similarity}
 
-\begin{table}[ht]
+\begin{table}[H]
   \caption{Similarity of Overlapping Text Annotations Stats}
   \label{tab:text_similarity}
   \centering
@@ -93,7 +93,7 @@ The results point to high general temporal precision, however, a significant amo
 
 Most overlapping annotations show low textual similarity across different annotators. The cosine similarities ranges from -0.29 -- 0.75, with a mean of 0.088 and a median of 0.072, indicating that many annotators differ in their wording or focus (see Table~\ref{tab:text_similarity}). The histogram confirms this by showing a concentration of values between 0 and 0.2, suggesting generally weak agreement in textual descriptions even when annotators mark the same time span.
 
-\begin{figure}[ht]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.8\textwidth]{figures/annotation_quality/similarity_of_overlapping_text_annotations.png}
   \caption{Similarity of Overlapping Text Annotations}
@@ -102,7 +102,7 @@ Most overlapping annotations show low textual similarity across different annota
 
 \subsection{Annotation Distribution}
 
-\begin{table}[ht]
+\begin{table}[H]
   \caption{Per File Measures}
   \label{tab:per_file}
   \centering
@@ -126,14 +126,14 @@ Most overlapping annotations show low textual similarity across different annota
 
 Table~\ref{tab:per_file} shows the statistics for annotations per file and distinct sound events per file. The dataset has a mean of approximately 4 annotations per file with a median of 2, indicating a positively skewed distribution. The maximum number of annotations for a single file is 96, which is significantly higher than the average.
 
-\begin{figure}[ht]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.8\textwidth]{figures/annotation_quality/annotations_per_file.png}
   \caption{Annotations Per File}
   \label{fig:annotations_per_file}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.8\textwidth]{figures/annotation_quality/distinct_sound_events_per_file.png}
   \caption{Distinct Sound Events Per File}
@@ -142,7 +142,7 @@ Table~\ref{tab:per_file} shows the statistics for annotations per file and disti
 
 \subsection{Annotation Detail and Quality Variation}
 
-\begin{table}[ht]
+\begin{table}[H]
   \caption{Text Annotation Detail}
   \label{tab:text_detail}
   \centering
@@ -165,14 +165,14 @@ Table~\ref{tab:per_file} shows the statistics for annotations per file and disti
 
 The annotations have an average word count of 7.85 words. The histogram in Figure~\ref{fig:word_count} shows a concentration between 5-10 words (a reasonable amount considering the annotation guidelines), however some annotators averaged over 20 words. The positive skew is indicative of this high variability.
 
-\begin{figure}[ht]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.8\textwidth]{figures/annotation_quality/word_count_per_annotation.png}
   \caption{Word Count Per Annotation}
   \label{fig:word_count}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.8\textwidth]{figures/annotation_quality/average_word_count_per_annotator.png}
   \caption{Average Word Count Per Annotator}
@@ -181,7 +181,7 @@ The annotations have an average word count of 7.85 words. The histogram in Figur
 
 Most annotators marked events lasting in the 5-10 second range, with an overall average of 8.38 sec. The distribution's long tail indicates some annotators consistently marked longer events, ranging over 20 seconds, indicating a difference in how annotators perceive events. The standard deviation of 3.31 seconds indicates moderate variation in the average durations used by different annotators.
 
-\begin{figure}[ht]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.8\textwidth]{figures/annotation_quality/average_annotation_duration_per_annotator.png}
   \caption{Average Annotation Duration Per Annotator}
@@ -192,7 +192,7 @@ Most annotators marked events lasting in the 5-10 second range, with an overall 
 
 Annotation duration, word count, and spelling errors were the indicators used to detect inconsistencies, outliers, and poor-quality annotations. Outlier thresholds were set both by IQR and explicit selection, following best practices and empirical testing.
 
-\begin{table}[ht]
+\begin{table}[H]
   \caption{Duration and Word Count Metrics}
   \label{tab:duration_word}
   \centering
@@ -221,7 +221,7 @@ Annotation duration, word count, and spelling errors were the indicators used to
 
 Event duration markers found no IQR lower outliers, therefore the central range is wide and tolerant. Explicit 1\%/99\% thresholds flagged 0.99\%/1\% of annotations respectively, while 5\%/95\% thresholds flagged 5\% each, showing that most annotations are reasonable, with few consistent outliers.
 
-\begin{table}[ht]
+\begin{table}[H]
   \caption{Duration Outcomes}
   \label{tab:duration_outcomes}
   \centering
@@ -239,7 +239,7 @@ Event duration markers found no IQR lower outliers, therefore the central range 
 
 Text description length, identified by word counts per annotation also found no lower outliers by IQR threshold. Percentile thresholds flagged 0.94\% of annotations under the fifth percentile. Explicit counts found no zero-word annotations, 335 one-word, 2024 two-word, and 3146 three-word annotations. A total of 9537 annotations, marking 26.62\% of the population were under the five-word threshold, arbitrarily found to be ideal for describing annotations based on the guidelines, potentially marking a large portion of the population as poor.
 
-\begin{table}[ht]
+\begin{table}[H]
   \caption{Word Count Outcomes}
   \label{tab:word_outcomes}
   \centering
@@ -271,7 +271,7 @@ Spelling errors can be fixed programmatically, flagging the annotation for revie
 
 Given the high dimensionality of the feature space (942 dimensions), Principal Component Analysis (PCA) was applied to reduce dimensionality while preserving the most important information.
 
-\begin{figure}[ht]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.9\textwidth]{figures/audio_features/pca_explained_variance.png}
   \caption{Explained variance by PCA components. Left: Individual variance contribution of each component. Right: Cumulative explained variance with 80\% and 90\% thresholds marked.}
@@ -290,7 +290,7 @@ This represents a significant dimensionality reduction (from 942 to 82 dimension
 
 To understand which features contribute most to the principal components, the feature loadings for the top three components were analyzed.
 
-\begin{figure}[ht]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.9\textwidth]{figures/audio_features/feature_importance.png}
   \caption{Top 15 features contributing to the first three principal components, showing the relative importance of different feature types.}
@@ -317,7 +317,7 @@ This suggests that while traditional spectral features like MFCCs are valuable, 
 
 K-means clustering was applied to the dimensionally-reduced feature vectors to identify natural groupings in the audio data. To determine the optimal number of clusters, silhouette scores were calculated for different values of k.
 
-\begin{figure}[ht]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.8\textwidth]{figures/audio_features/silhouette_scores.png}
   \caption{Silhouette scores for different numbers of clusters (k), showing that k=3 provides the best cluster separation.}
@@ -326,7 +326,7 @@ K-means clustering was applied to the dimensionally-reduced feature vectors to i
 
 The silhouette analysis indicated that 3 clusters provided the optimal balance between cluster separation and cohesion. The dataset was subsequently partitioned into these three clusters.
 
-\begin{figure}[ht]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.9\textwidth]{figures/audio_features/cluster_composition.png}
   \caption{Left: Number of audio regions in each cluster. Right: Percentage of silent regions in each cluster.}
@@ -337,7 +337,7 @@ The silhouette analysis indicated that 3 clusters provided the optimal balance b
 
 Analysis of the three clusters revealed distinct audio characteristics:
 
-\begin{table}[ht]
+\begin{table}[H]
   \caption{Characteristics of the three audio feature clusters}
   \label{tab:cluster_chars}
   \centering
@@ -360,7 +360,7 @@ Interestingly, silent regions were distributed across all three clusters rather 
 
 To visualize the high-dimensional feature space, t-Distributed Stochastic Neighbor Embedding (t-SNE) was applied to project the data into two dimensions while preserving local relationships.
 
-\begin{figure}[ht]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.8\textwidth]{figures/audio_features/tsne_visualization.png}
   \caption{t-SNE visualization of audio features colored by cluster assignment. Silent regions are highlighted with black circles.}
