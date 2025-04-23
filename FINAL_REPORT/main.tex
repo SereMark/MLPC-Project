@@ -54,7 +54,153 @@ The dataset consists of 9,026 audio files annotated by 330 students, containing 
 \section{Case Study}
 \label{sec:case_study}
 
-TODO: Find two interesting recordings with at least two annotators and multiple annotations. Compare temporal and textual annotations, explore how annotations rely on or deviate from keywords in metadata, and evaluate whether annotations were done according to the task description.
+\subsection{Temporal & Textual Annotation Comparison}
+Audio 1 (407115.mp3):
+
+Temporal Overlap:
+
+All annotators agree on a long segment (0–29s) containing multiple events.
+
+Annotators 2 and 3 both highlight sound events between ~16s and 22s (honking, beeping, scratching).
+
+Differences in segment precision — Annotator 1 uses broader intervals, while Annotators 2 & 3 mark finer-grained events.
+
+Textual Similarity & Differences:
+
+All three detect people talking — described as “lively crowd,” “people talking,” and “somebody sweeping” (possibly mistaken interpretation).
+
+Annotators 2 & 3 label overlapping sound events like honks or beeps, but use slightly different language ("horn honking", "a honking sound", "a beeping sound").
+
+Annotator 2 uniquely identifies a sewing machine and wheel scratching, indicating higher event resolution or different interpretation.
+
+Audio 2 (352781.mp3):
+
+Temporal Annotations (Onset/Offset)
+
+High agreement across annotators on the full duration of the audio (approx. 0 to 16.4s).
+
+Small differences in onset (e.g., 0.0 vs. 0.028 or 0.056) are minimal and likely due to human precision.
+
+All annotators treat the clip as a continuous ambient scene rather than short, isolated events.
+
+Similarities:
+
+All three annotators identify:
+
+Human speech: Described as "muffled", "unclear", "multiple people"
+
+Background noise: Captured as "white noise", "engine", "hum"
+
+All are describing a confined indoor-like sound environment (e.g., inside a bus or a room)
+
+Differences:
+
+A1 explicitly identifies the context ("on a bus")
+
+A2 generalizes to "close space" and "white noise"
+
+A3 adds more detail, identifying a radio and engine with specific qualifiers ("silently", "evenly indoors")
+
+\subsection{Deviation from keywords and textual descriptions in the
+audio’s metadata}
+
+407115.mp3
+
+Matches / Reliance : "people talking", "lively crowd" → matches people, market, mall
+
+"sewing machine noise" → directly reflects sewing, machines, textile
+
+Deviations / Additions:
+
+"horn honking", "beeping", "wheel scratching" → Not present in keywords
+
+These are foreground events perceived by annotators but not described in metadata
+
+Conclusion:
+
+Annotations rely heavily on keywords for background context (people, sewing, market scene)
+
+Annotators go beyond the metadata by identifying short, foreground sound events (e.g., honks)
+
+352781.mp3
+
+Matches / Reliance:
+
+"engine of a heavy vehicle", "bus driving" → matches engine, bus, vehicle
+
+"people speaking", "voices", "talking" → matches people, voices, talking
+
+"radio playing" → directly matches radio
+
+"white noise", "ambience" → aligns with ambience
+
+Deviations / Additions:
+
+Very few! Maybe "white noise" adds a perceptual detail, but it’s covered by ambience
+
+Conclusion:
+
+This is a textbook example of alignment
+
+Annotations match nearly all metadata keywords, showing strong reliance and task alignment
+
+\subsection{Done according to task description?}
+
+For 407115.mp3 (Urban Environment with Crowd and Sewing Sounds)
+
+Temporal Annotation Compliance:
+
+Onset and Offset: The annotators followed the rule of annotating distinct sounds. For example:
+
+People talking: Different annotators split the crowd noise into multiple events (e.g., a continuous sound, then specific people talking). The annotations' onset/offset reflects this continuous nature of the sound, as suggested by the task (e.g., "people talking" marked over a longer period).
+
+Sewing machine: This was marked as a continuous sound with an onset at the start and an offset at the end of the sound.
+
+Honking, beeping, and wheel scratching: These are separate events, as per the task's rule of separating events when noticeable pauses are present. Annotators made distinct annotations for each.
+
+The temporal boundaries are consistent and correct based on the task's example. For instance, the “sewing machine noise” annotation lasts throughout the segment where the machine sound is heard, fitting the continuous sound rule.
+
+Textual Annotation Compliance:
+
+Specific Descriptions: The descriptions follow the task’s required level of detail:
+
+Source and Action: Each annotation specifies the source of the sound (e.g., "sewing machine noise," "people talking").
+
+Descriptor: Descriptions like "lively," "muffled," and "tonal" provide insight into how the sounds were perceived.
+
+Context: Annotators provide an environmental context where relevant (e.g., “crowd outdoors,” “in the background,” “indoors”).
+
+The annotations adhere to the one description for one sound rule (e.g., separate descriptions for "honking," "wheel scratching," and "people talking").
+
+Conclusion:
+
+The temporal and textual annotations are fully compliant with the task description. The annotators correctly followed guidelines for separating sounds, providing detailed annotations, and aligning their work with the task’s structure.
+
+For 352781.mp3 (Bus Environment with People Talking and Engine Sounds)
+
+Temporal Annotation Compliance:
+
+Onset and Offset: The annotators marked the entire recording as a single region for continuous sounds like engine hum and ambient voices, which aligns with the continuous sound rule (e.g., "low hum of a bus driving steadily").
+
+In contrast, short events like horn honking or radio playing were marked separately, showing the annotators correctly handled short, separate sound events and gaps in between.
+
+The temporal boundaries for each sound event are appropriate, and the overlapping sounds (e.g., bus engine and talking) are managed correctly.
+
+Textual Annotation Compliance:
+
+Specific Descriptions: The descriptions follow the task’s rule of detailed annotations:
+
+Source and Action: Each annotation specifies the source of the sound (e.g., "engine of a heavy vehicle," "voices of people").
+
+Descriptor: Descriptions like “hissing,” “soft,” and “muffled” describe how the sound was perceived.
+
+Context: The context is well-defined, with mentions of "indoors," "in the distance," and "close by."
+
+No multiple events are described in a single annotation, meaning each description corresponds to one sound event.
+
+Conclusion:
+
+The temporal and textual annotations for this recording are also fully compliant with the task description. Annotators successfully separated distinct sounds, followed the rules for continuous versus discrete events, and provided detailed textual descriptions.
 
 \section{Annotation Quality}
 \label{sec:annotation_quality}
