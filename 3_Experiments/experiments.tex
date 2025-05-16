@@ -1,0 +1,160 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{times}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage[hyphens]{url}
+\usepackage{microtype}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    filecolor=black,
+    urlcolor=blue,
+    pdftitle={MLPC 2025 Task 3: Classification Experiments},
+    pdfsubject={Sound Event Classification Report},
+    pdfkeywords={Audio Classification, Sound Event Detection, Machine Learning, MLP, LSTM, CNN1D},
+    breaklinks=true
+}
+\usepackage{caption}
+
+\newcommand{\code}[1]{\texttt{#1}}
+
+\setlist{itemsep=1pt, parsep=2pt, topsep=4pt, leftmargin=*}
+
+\renewcommand{\arraystretch}{1.25}
+
+\captionsetup{font=small, labelfont=bf, skip=6pt, singlelinecheck=false, format=hang}
+
+\title{MLPC 2025 Task 3: Frame-Level Classification Experiments}
+
+\begin{document}
+\maketitle
+\pagestyle{plain}
+
+\section{Data Split Strategy and Rationale}
+\label{sec:data_split}
+
+\subsection{Data Partitioning for Model Development and Evaluation}
+The dataset, comprising 8230 audio files with associated pre-extracted frame-level features, was divided at the \textbf{audio file level}. A fixed random seed (\code{RANDOM\_STATE = 42}) was employed for all splitting operations to guarantee reproducibility, and the dataset was allocated as follows:
+\begin{itemize}
+    \item \textbf{Training Set:} 5761 files (70\% of total), used for model parameter learning.
+    \item \textbf{Validation Set:} 823 files (10\% of total), used for hyperparameter tuning and optimal epoch selection during final model retraining.
+    \item \textbf{Test Set:} 1646 files (20\% of total), reserved for a single, final unbiased performance evaluation of the selected models.
+\end{itemize}
+
+\subsection{Potential Information Leakage Factors and Mitigation}
+Information leakage across data splits can inflate performance metrics. Potential risks with a file-level split include:
+\begin{itemize}
+    \item \textbf{Source Recording Overlap:} Multiple feature files originating from segments of the same longer audio recording could be distributed across different splits.
+    \item \textbf{Consistent Environmental/Speaker Characteristics:} Similar leakage can occur if groups of files share unique recording environments or distinct speaker traits.
+\end{itemize}
+\textbf{Addressing these risks:} A random file-level split was implemented. While this carries a potential for leakage, the consistent use of \code{RANDOM\_STATE = 42} ensures fair comparison across models.
+
+\subsection{Methodology for Unbiased Final Performance Estimates}
+Unbiased final performance estimates were ensured by:
+\begin{enumerate}
+    \item Sequestering the test set from all training and tuning processes.
+    \item Using the validation set exclusively for hyperparameter selection and best epoch identification during model development and retraining.
+    \item Evaluating the final selected model (best architecture, hyperparameters, and epoch from retraining) only once on the test set.
+\end{enumerate}
+
+\section{Audio Features}
+\label{sec:audio_features}
+
+\subsection{Feature Selection and Rationale}
+All experiments utilized the **complete set of 13 pre-extracted audio feature types**. These include: \code{embeddings}, \code{melspectrogram}, \code{mfcc}, \code{mfcc\_delta}, \code{mfcc\_delta2}, \code{flatness}, \code{centroid}, \code{flux}, \code{energy}, \code{power}, \code{bandwidth}, \code{contrast}, and \code{zerocrossingrate}. These were concatenated frame-wise, forming a 942-dimensional input vector per 120ms frame (log: \code{INPUT\_DIM: 942 from 13 features}). This inclusive approach was chosen to establish comprehensive baselines by providing models with maximal available information. Detailed individual feature utility analysis is addressed in Section 1 (Labeling Function).
+
+\subsection{Feature Preprocessing Applied}
+The provided features were used with minimal direct preprocessing:
+\begin{itemize}
+    \item \textbf{No Global Scaling/Normalization:} No dataset-wide global feature scaling was applied post-loading. Model components like Batch Normalization (in CNN1D) offer some robustness to feature scale variations.
+    \item \textbf{Sequence Alignment and Padding:}
+    \begin{enumerate}[label=(\roman*)]
+        \item \textit{Intra-file Alignment:} Within each audio file, feature streams were aligned to a common frame count (minimum length among them), primarily by truncation.
+        \item \textit{Batch Padding:} Variable-length sequences were zero-padded within each mini-batch by the \code{collate\_fn} to match the longest sequence in that batch.
+    \end{enumerate}
+\end{itemize}
+
+\section{Evaluation Framework}
+\label{sec:evaluation_framework}
+
+\subsection{Choice and Justification of Evaluation Criterion}
+The primary metric for model selection and comparison was the **mean per-class Balanced Accuracy (BACC)**. This was chosen due to:
+\begin{itemize}
+    \item The multi-label nature of the task (58 classes per frame).
+    \item Significant class imbalance common in sound event datasets; BACC mitigates misleadingly high standard accuracy by averaging sensitivity and specificity for each class ($BACC_c = 0.5 \times (TPR_c + TNR_c)$), then averaging these per-class BACC scores.
+\end{itemize}
+The training loss function was Binary Cross-Entropy with Logits (\code{nn.BCEWithLogitsLoss}).
+
+\subsection{Baseline and Optimal Performance Benchmarks}
+\begin{itemize}
+    \item \textbf{Baseline Performance:} A theoretical random guessing baseline yields 0.5 mean per-class BACC. Our empirical baseline, the best MLP model, achieved a Test BACC of \textbf{0.8008}.
+    \item \textbf{Optimal Performance:} The theoretical maximum BACC is 1.0. Our experiments achieved a current best Test BACC of \textbf{0.8201} with the CNN1D model.
+\end{itemize}
+
+\section{Experiments and Model Performance}
+\label{sec:experiments}
+
+\subsection{Experimental Setup Overview}
+\begin{itemize}
+    \item \textbf{Dataset \& Features:} 5761 train / 823 val / 1646 test files; Input: 942 features/frame, 58 classes.
+    \item \textbf{Training Protocol:} Adam optimizer, `ReduceLROnPlateau` scheduler. Hyperparameter search: 15 epochs (scheduler patience 3). Final retraining: 30 epochs (scheduler patience 6). Batch size 32.
+    \item \textbf{Evaluation Metric:} Mean per-class BACC (validation set for selection, test set for final score).
+\end{itemize}
+
+\subsection{Multi-Layer Perceptron (MLP) Results}
+\label{ssec:mlp_results}
+MLPs with one hidden ReLU layer were evaluated.
+\begin{itemize}
+    \item \textbf{Hyperparameters Tuned:} Hidden dimension ($h \in \{128, 256, 512\}$), learning rate ($lr \in \{10^{-3}, 5 \cdot 10^{-4}, 2 \cdot 10^{-4}\}$). (9 configurations).
+    \item \textbf{Key Findings:} Performance improved with larger $h$ ($h=512$ optimal). $lr=0.001$ was generally best. Overfitting (Train BACC > Val BACC) was observed (e.g., Cfg1/9 Ep15: Tr 0.795, Val 0.789) but manageable.
+    \item \textbf{Best Search Config:} $h=512, lr=0.001$. Val BACC: 0.7934.
+    \item \textbf{Final Test BACC: `0.8008`} (Loss: 0.0381). Retrained Val BACC peak: 0.7960. Checkpoint: \code{MLP\_testBACC\_0.8008.pth}.
+\end{itemize}
+
+\subsection{Long Short-Term Memory (LSTM) Results}
+LSTMs were tested for temporal modeling.
+\begin{itemize}
+    \item \textbf{Hyperparameters Tuned:} Hidden dim ($h \in \{128, 256\}$), layers ($l \in \{1, 2\}$), dropout ($d \in \{0.25, 0.4\}$), $lr \in \{10^{-3}, 5 \cdot 10^{-4}, 2 \cdot 10^{-4}\}$). (24 configs).
+    \item \textbf{Key Findings:} Many LSTMs (20/24) stagnated (Val BACC $\approx 0.751$), especially $l=2$. Effective learning favored $l=1, h=256$. Best search ($h=256, l=1, d=0.25, lr=0.001$) achieved Val BACC 0.7807. During its final retraining, Tr BACC slightly decreased (0.722 $\to$ 0.690) while Val BACC increased (0.751 $\to$ 0.797) and Tr Loss decreased, possibly due to dropout effects.
+    \item \textbf{Final Test BACC: `0.7986`}. Loss: 0.0447. Checkpoint: \code{LSTM\_testBACC\_0.7986.pth}.
+\end{itemize}
+
+\subsection{1D Convolutional Neural Network (CNN1D) Results}
+\label{ssec:cnn1d_results}
+Two-block 1D CNNs with BatchNorm and Dropout were evaluated.
+\begin{itemize}
+    \item \textbf{Hyperparameters Tuned:} Filters $f_1 \in \{64, 128\}$, $f_2 \in \{128, 256\}$; kernel $ks \in \{3, 5\}$; dropout $d \in \{0.25, 0.4\}$; $lr \in \{10^{-3}, 5 \cdot 10^{-4}, 2 \cdot 10^{-4}\}$). (48 configs).
+    \item \textbf{Key Findings:} CNN1Ds were top performers. $ks=5$ outperformed $ks=3$. Larger filter counts and $d=0.4$ were generally beneficial. $lr=0.0005$ was often optimal. Best search ($f_1=128, f_2=128, ks=5, d=0.4, lr=0.0005$) yielded Val BACC 0.8134. Strong generalization was common (often Val BACC > Tr BACC, e.g., Cfg35/48 Ep14: Tr BACC 0.691, Val BACC 0.813), indicating effective dropout.
+    \item \textbf{Final Test BACC: `0.8201`}. Loss: 0.0381. Checkpoint: \code{CNN1D\_testBACC\_0.8201.pth}.
+\end{itemize}
+
+\subsection{Final Model Comparison and Selection}
+
+\begin{table}[h!]
+\centering
+\caption{Final Test Performance of Optimized Model Architectures.}
+\label{tab:model_comparison_final}
+\begin{tabular}{@{}l p{6.0cm} c c c@{}} 
+\toprule
+Model Family & Best Hyperparameters (Search Phase) & Val BACC (Retrain) & Test Loss & Test BACC \\ \midrule
+MLP    & $h$=512, $lr=10^{-3}$     & 0.7960 & 0.0381 & 0.8008 \\
+LSTM   & $h$=256, $l$=1, $d$=0.25, $lr=10^{-3}$ & 0.7970 & 0.0447 & 0.7986 \\
+\textbf{CNN1D} & \textbf{$f_1$=128, $f_2$=128, $ks$=5, $d$=0.4, $lr=5\cdot10^{-4}$} & \textbf{0.8151} & \textbf{0.0381} & \textbf{0.8201} \\ \bottomrule
+\end{tabular}
+\vspace{0.5em} 
+\noindent \footnotesize{\textit{Hyperparameter abbreviations: $h$=hidden\_dim, $l$=num\_layers, $d$=dropout\_rate, $f_1$=filters blk1, $f_2$=filters blk2, $ks$=kernel\_size, $lr$=learning\_rate.}}
+\end{table}
+
+The systematic experiments identify the \textbf{1D Convolutional Neural Network (CNN1D)} as the superior architecture, achieving a Test BACC of \textbf{0.8201}. This model's proficiency in capturing local temporal patterns, augmented by effective regularization, proved most advantageous. The MLP established a robust baseline (Test BACC 0.8008). LSTMs (Test BACC 0.7986) were more challenging to optimize effectively for this dataset.
+
+Based on these results, the **CNN1D model with parameters: filters block 1=128, filters block 2=128, kernel size=5, dropout rate=0.4, and learning rate=$5 \cdot 10^{-4}$ is selected as the best-performing model.**
+
+\end{document}
