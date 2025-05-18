@@ -91,7 +91,7 @@ The primary metric for model selection and comparison was the **mean per-class B
     \item The multi-label nature of the task (58 classes per frame).
     \item Significant class imbalance common in sound event datasets; BACC mitigates misleadingly high standard accuracy by averaging sensitivity and specificity for each class ($BACC_c = 0.5 \times (TPR_c + TNR_c)$), then averaging these per-class BACC scores.
 \end{itemize}
-The training loss function was Binary Cross-Entropy with Logits (\code{nn.BCEWithLogitsLoss}).
+The training loss function was Binary Cross-Entropy with Logits.
 
 \subsection{Baseline and Optimal Performance Benchmarks}
 \begin{itemize}
@@ -116,7 +116,7 @@ MLPs with one hidden ReLU layer were evaluated.
     \item \textbf{Hyperparameters Tuned:} Hidden dimension ($h \in \{128, 256, 512\}$), learning rate ($lr \in \{10^{-3}, 5 \cdot 10^{-4}, 2 \cdot 10^{-4}\}$). (9 configurations).
     \item \textbf{Key Findings:} Performance improved with larger $h$ ($h=512$ optimal). $lr=0.001$ was generally best. Overfitting (Train BACC > Val BACC) was observed (e.g., Cfg1/9 Ep15: Tr 0.795, Val 0.789) but manageable.
     \item \textbf{Best Search Config:} $h=512, lr=0.001$. Val BACC: 0.7934.
-    \item \textbf{Final Test BACC: `0.8008`} (Loss: 0.0381). Retrained Val BACC peak: 0.7960. Checkpoint: \code{MLP\_testBACC\_0.8008.pth}.
+    \item \textbf{Final Test BACC: `0.8008`} (Loss: 0.0381). Retrained Val BACC peak: 0.7960.
 \end{itemize}
 
 \subsection{Long Short-Term Memory (LSTM) Results}
@@ -124,7 +124,7 @@ LSTMs were tested for temporal modeling.
 \begin{itemize}
     \item \textbf{Hyperparameters Tuned:} Hidden dim ($h \in \{128, 256\}$), layers ($l \in \{1, 2\}$), dropout ($d \in \{0.25, 0.4\}$), $lr \in \{10^{-3}, 5 \cdot 10^{-4}, 2 \cdot 10^{-4}\}$). (24 configs).
     \item \textbf{Key Findings:} Many LSTMs (20/24) stagnated (Val BACC $\approx 0.751$), especially $l=2$. Effective learning favored $l=1, h=256$. Best search ($h=256, l=1, d=0.25, lr=0.001$) achieved Val BACC 0.7807. During its final retraining, Tr BACC slightly decreased (0.722 $\to$ 0.690) while Val BACC increased (0.751 $\to$ 0.797) and Tr Loss decreased, possibly due to dropout effects.
-    \item \textbf{Final Test BACC: `0.7986`}. Loss: 0.0447. Checkpoint: \code{LSTM\_testBACC\_0.7986.pth}.
+    \item \textbf{Final Test BACC: `0.7986`}. Loss: 0.0447.
 \end{itemize}
 
 \subsection{1D Convolutional Neural Network (CNN1D) Results}
@@ -133,7 +133,7 @@ Two-block 1D CNNs with BatchNorm and Dropout were evaluated.
 \begin{itemize}
     \item \textbf{Hyperparameters Tuned:} Filters $f_1 \in \{64, 128\}$, $f_2 \in \{128, 256\}$; kernel $ks \in \{3, 5\}$; dropout $d \in \{0.25, 0.4\}$; $lr \in \{10^{-3}, 5 \cdot 10^{-4}, 2 \cdot 10^{-4}\}$). (48 configs).
     \item \textbf{Key Findings:} CNN1Ds were top performers. $ks=5$ outperformed $ks=3$. Larger filter counts and $d=0.4$ were generally beneficial. $lr=0.0005$ was often optimal. Best search ($f_1=128, f_2=128, ks=5, d=0.4, lr=0.0005$) yielded Val BACC 0.8134. Strong generalization was common (often Val BACC > Tr BACC, e.g., Cfg35/48 Ep14: Tr BACC 0.691, Val BACC 0.813), indicating effective dropout.
-    \item \textbf{Final Test BACC: `0.8201`}. Loss: 0.0381. Checkpoint: \code{CNN1D\_testBACC\_0.8201.pth}.
+    \item \textbf{Final Test BACC: `0.8201`}. Loss: 0.0381.
 \end{itemize}
 
 \subsection{Final Model Comparison and Selection}
