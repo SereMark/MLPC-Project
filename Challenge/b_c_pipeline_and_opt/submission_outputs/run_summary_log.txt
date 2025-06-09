@@ -1,0 +1,21 @@
+================================================================================
+MLPC 2025 CHALLENGE: PIPELINE LOG
+================================================================================
+Strategy (Max Aggregation): Final Validation Cost = 34.9913
+Strategy (Mean Aggregation): Final Validation Cost = 36.2890
+Strategy (Hybrid Aggregation (0.7max+0.3mean)): Final Validation Cost = 35.0683
+Strategy (Max Agg + Temporal Smoothing): Final Validation Cost = 34.9528
+
+================================================================================
+--- CHAMPION PIPELINE SELECTION ---
+  - Strategy: Max Agg + Temporal Smoothing, Cost: 34.9528
+  - Strategy: Max Aggregation, Cost: 34.9913
+  - Strategy: Hybrid Aggregation (0.7max+0.3mean), Cost: 35.0683
+  - Strategy: Mean Aggregation, Cost: 36.2890
+
+🏆 Winning Strategy: 'Max Agg + Temporal Smoothing' with cost 34.9528
+   - Aggregation: max_agg
+   - Post-processing Smoothing: Enabled
+   - Optimal Thresholds: {'Speech': np.float64(0.2321), 'Shout': np.float64(0.1041), 'Chainsaw': np.float64(0.0425), 'Jackhammer': np.float64(0.0657), 'Lawn Mower': np.float64(0.1757), 'Power Drill': np.float64(0.1139), 'Dog Bark': np.float64(0.0744), 'Rooster Crow': np.float64(0.0538), 'Horn Honk': np.float64(0.1419), 'Siren': np.float64(0.0813)}
+
+Final submission file generated at: C:\Users\serem\Documents\MLPC-Project\Challenge\b_c_pipeline_and_opt\submission_outputs\predictions.csv

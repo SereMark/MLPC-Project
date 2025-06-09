@@ -15,6 +15,7 @@ dependencies:
   - pyspellchecker
   - seaborn
   - librosa
+  - tqdm
   - pip
   - pip:
       - iterative-stratification
