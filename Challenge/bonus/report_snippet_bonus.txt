@@ -1,0 +1,9 @@
+The pretrained M2D model achieved a total cost of 0.94 on the training data (after threshold optimization), which indicates outstanding performance. This means that the M2D model is highly effective at minimizing misclassification penalties within the cost-sensitive framework we are using.
+
+In contrast, our final model resulted in a total cost of 34.95 on the same dataset. While this means that we have a functional model, it is significantly less optimal than the M2D baseline. This stark difference highlights the superior ability of the pretrained M2D model to capture the underlying patterns in the data.
+
+The performance gap can be attributed to several possible factors:
+
+Model architecture: M2D is much much more complex and better tailored to the problem space.
+
+Pretraining: M2D leverages pretraining on a larger dataset than ours (~100k clips to our ~8k if we're not mistaken), providing it with a head start in learning useful representations.
